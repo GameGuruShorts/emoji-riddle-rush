@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Emoji Riddle Rush</title>
   <style>
     body {
@@ -42,14 +42,10 @@
 <body>
   <h1>Emoji Riddle Rush</h1>
   <div class="emoji" id="emoji"></div>
-  <input
-    type="text"
-    id="guess"
-    placeholder="Your guess here..."
-    onkeydown="handleKey(event)"
-  />
+  <input type="text" id="guess" placeholder="Your guess here..." onkeydown="handleKey(event)" />
   <button onclick="checkGuess()">Submit</button>
   <div id="result"></div>
+  <button id="retryBtn" style="display:none; margin-top: 10px;" onclick="retryRiddle()">Retry</button>
 
   <script>
     const riddles = [
@@ -67,19 +63,25 @@
       { emoji: "🎅🦌🎄", answer: "santa claus" },
       { emoji: "👸❄️⛄", answer: "frozen" },
       { emoji: "🐍🔺🧙", answer: "slytherin" },
+      { emoji: "🚗🔙⌚", answer: "back to the future" },
+      { emoji: "🧑‍🚀🌕", answer: "first man on the moon" },
+      { emoji: "🧸🎈🎂", answer: "toy story" },
+      { emoji: "👦🐉🔥", answer: "how to train your dragon" },
+      { emoji: "🧛‍♂️🦇🌙", answer: "dracula" }
     ];
 
-    let currentRiddle;
+    let riddle;
     let attempts = 0;
     const maxAttempts = 3;
 
     function loadRiddle() {
-      currentRiddle = riddles[Math.floor(Math.random() * riddles.length)];
-      document.getElementById("emoji").textContent = currentRiddle.emoji;
+      riddle = riddles[Math.floor(Math.random() * riddles.length)];
+      document.getElementById("emoji").textContent = riddle.emoji;
       document.getElementById("result").textContent = "";
       const guessInput = document.getElementById("guess");
       guessInput.value = "";
       guessInput.disabled = false;
+      document.getElementById("retryBtn").style.display = "none";
       attempts = 0;
       guessInput.focus();
     }
@@ -91,14 +93,14 @@
 
       attempts++;
 
-      if (userGuess === currentRiddle.answer) {
-        result.textContent = "🎉 Correct! Loading next emoji...";
+      if (userGuess === riddle.answer) {
+        result.textContent = "🎉 Correct! You solved it!";
         guessInput.disabled = true;
-        setTimeout(loadRiddle, 1500);
+        document.getElementById("retryBtn").style.display = "none";
       } else if (attempts >= maxAttempts) {
-        result.textContent = `❌ Out of tries! The answer was: ${currentRiddle.answer}`;
+        result.textContent = `❌ Out of tries! The answer was: ${riddle.answer}`;
         guessInput.disabled = true;
-        setTimeout(loadRiddle, 3000);
+        document.getElementById("retryBtn").style.display = "inline-block";
       } else {
         result.textContent = `❌ Try again! You have ${maxAttempts - attempts} attempt(s) left.`;
       }
@@ -108,6 +110,10 @@
       if (event.key === "Enter") {
         checkGuess();
       }
+    }
+
+    function retryRiddle() {
+      loadRiddle();
     }
 
     window.onload = loadRiddle;
